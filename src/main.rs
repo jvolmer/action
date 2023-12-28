@@ -1,11 +1,10 @@
-pub mod action;
 pub mod correlation;
-pub mod metropolis_step;
-pub mod spin;
+pub mod model;
+pub mod monte_carlo;
 
-use action::Action;
-use metropolis_step::MonteCarloSimulation;
-use spin::{Spin, SpinSum};
+use model::action::Action;
+use model::spin::{Spin, SpinSum};
+use monte_carlo::metropolis_step::MonteCarloSimulation;
 
 fn main() {
     let old_spin = Spin::Up;

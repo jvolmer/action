@@ -1,7 +1,7 @@
 use rand::{Rng, SeedableRng};
 
-use crate::action::Action;
-use crate::spin::Spin;
+use crate::model::action::Action;
+use crate::model::spin::Spin;
 
 pub struct MonteCarloSimulation {
     // TODO this only has to a uniform distribution [0,1)

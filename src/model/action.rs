@@ -1,5 +1,5 @@
 use crate::correlation::Correlation;
-use crate::spin::{Spin, SpinSum};
+use crate::model::spin::{Spin, SpinSum};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Action {
