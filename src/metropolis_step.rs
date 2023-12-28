@@ -1,12 +1,29 @@
+use rand::{Rng, SeedableRng};
+
 use crate::action::Action;
 use crate::spin::Spin;
+
+pub struct MonteCarloSimulation {
+    // TODO this only has to a uniform distribution [0,1)
+    rng: rand_pcg::Pcg64Mcg,
+}
+impl MonteCarloSimulation {
+    pub fn new(seed: u64) -> Self {
+        Self {
+            rng: rand_pcg::Pcg64Mcg::seed_from_u64(seed),
+        }
+    }
+    // TODO this should return different types of MonteCarloSteps
+    pub fn step(&mut self, action: Action) -> MetropolisStep {
+        MetropolisStep::from(action, self.rng.gen())
+    }
+}
 
 #[derive(Debug, PartialEq)]
 pub struct MetropolisStep {
     is_accepted: bool,
 }
 impl MetropolisStep {
-    // TODO rand is uniformly distributed in [0,1)
     pub fn from(action: Action, rand: f64) -> Self {
         // TODO add temperature
         MetropolisStep {
