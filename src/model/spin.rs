@@ -1,18 +1,10 @@
 use crate::correlation::Observable;
-use std::{iter::Sum, ops::Add};
+use std::{fmt, iter::Sum, ops::Add};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Spin {
     Up,
     Down,
-}
-impl Add for Spin {
-    type Output = SpinSum;
-    fn add(self, other: Self) -> SpinSum {
-        SpinSum {
-            value: self.value() + other.value(),
-        }
-    }
 }
 impl Spin {
     pub fn flip(self) -> Self {
@@ -22,11 +14,27 @@ impl Spin {
         }
     }
 }
+impl Add for Spin {
+    type Output = SpinSum;
+    fn add(self, other: Self) -> SpinSum {
+        SpinSum {
+            value: self.value() + other.value(),
+        }
+    }
+}
 impl Observable for Spin {
     fn value(&self) -> i64 {
         match self {
             Self::Up => 1,
             Self::Down => -1,
+        }
+    }
+}
+impl fmt::Display for Spin {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Up => write!(f, "+"),
+            Self::Down => write!(f, "-"),
         }
     }
 }
