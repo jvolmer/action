@@ -10,9 +10,10 @@ impl Action {
     pub fn new(value: i64) -> Self {
         Action { value }
     }
-    pub fn local(spin: &Spin, neighborhood: &SpinSum) -> Self {
+    pub fn local(spin: &Spin, neighborhood: &Vec<Spin>) -> Self {
+        let spin_sum: SpinSum = neighborhood.into_iter().sum();
         Action {
-            value: 4 * Correlation::of(spin, neighborhood).value(),
+            value: 4 * Correlation::of(spin, &spin_sum).value(),
         }
     }
     pub fn boltzmann_weight(self) -> f64 {
@@ -27,19 +28,19 @@ mod tests {
     #[test]
     fn computes_local_action_from_spin_and_neighborhood() {
         assert_eq!(
-            Action::local(&Spin::Up, &SpinSum::new(1)),
+            Action::local(&Spin::Up, &vec![Spin::Up]),
             Action { value: 4 }
         );
         assert_eq!(
-            Action::local(&Spin::Down, &SpinSum::new(1)),
+            Action::local(&Spin::Down, &vec![Spin::Up]),
             Action { value: -4 }
         );
         assert_eq!(
-            Action::local(&Spin::Up, &SpinSum::new(2)),
+            Action::local(&Spin::Up, &vec![Spin::Up, Spin::Up]),
             Action { value: 8 }
         );
         assert_eq!(
-            Action::local(&Spin::Down, &SpinSum::new(2)),
+            Action::local(&Spin::Down, &vec![Spin::Up, Spin::Up]),
             Action { value: -8 }
         );
     }

@@ -1,7 +1,7 @@
 use crate::correlation::Observable;
-use std::ops::Add;
+use std::{iter::Sum, ops::Add};
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Spin {
     Up,
     Down,
@@ -38,6 +38,22 @@ pub struct SpinSum {
 impl SpinSum {
     pub fn new(value: i64) -> Self {
         SpinSum { value }
+    }
+}
+impl Add<Spin> for SpinSum {
+    type Output = SpinSum;
+    fn add(self, other: Spin) -> SpinSum {
+        SpinSum {
+            value: self.value() + other.value(),
+        }
+    }
+}
+impl<'a> Sum<&'a Spin> for SpinSum {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Spin>,
+    {
+        iter.fold(SpinSum { value: 0 }, |acc, &x| acc + x)
     }
 }
 impl Observable for SpinSum {

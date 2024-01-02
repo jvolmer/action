@@ -3,13 +3,12 @@ pub mod model;
 pub mod monte_carlo;
 
 use model::action::Action;
-use model::spin::{Spin, SpinSum};
+use model::spin::Spin;
 use monte_carlo::metropolis_step::MonteCarloSimulation;
 
 fn main() {
     let old_spin = Spin::Up;
-    let neighborhood = SpinSum::new(1);
-    let action = Action::local(&old_spin, &neighborhood);
+    let action = Action::local(&old_spin, &vec![Spin::Up]);
     println!("Old Spin: {:?}, Action: {:?}", old_spin, action);
 
     let mut simulation = MonteCarloSimulation::new(569);
