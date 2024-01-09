@@ -3,25 +3,10 @@
 > Simulation of the ising model implemented using the actor model
 
 * Background
+TODO
 
 * Theory
-** Model
-Simulation of a ferromagnet without an external field
-2 dimensional spin field ("lattice") $\textbf{s}$ of size L x L, where $s_i \in {-1, 1}$ can only point upwards (+1) or downwards (-1).
-Hamilton operator (why is not the action defined?) $H(\textbf{s}) = - \sum_{i,j} s_i s_j$
-
-** Monte Carlo Simulation
-We want to compute the expectation value of some observable O in a statistical canonical ensemble
-$<O> = \sum_{\textbf{s}} O(\textbf{s}) P(\textbf{s})$, where $P(\textbf{s}) = \frac{\exp(-H(\textbf{s})/T)}{\sum_{\textbf{s} \exp(-H(\textbf{s})/T)}$ is the probability to find a system with energy $H$ with temperature $T$ (also called Boltzmann weight). Here one specific spin lattice $\textbf{s}$ is called "configuration".
-
-With Monte Carlo we just choose configurations according to the Boltzmann weight $P$ such that the expectation value becomes $<O> = 1/N \sum_{n=1}^N O(\textbf{s}_n)$.
-
-How to choose the configurations according the the Boltzmann weight? Via a Markov chain, where we generate a new configuration $\textbf{s}_{new}$ out of another one $\textbf{s}$.
-For this we generate a configuration candidate $\textbf{s}'$  which is just $\textbf{s}$ with one spin flipped. This candidate is accepted (becomes the new configuration) with transition probability
-$W(\textbf{s} -> \textbf{s}') = min (1, \exp(-\Delta E / T)), where $\Delta E = E(\textbf{s}') - E(\textbf{s})$ is the energy difference between the two configurations. If the candidate is not accepted, $\textbf{s}_{new} = \textbf{s}$. If $Delta E <= 0$, the candidate is always accepted, otherwise it is accepted with probability $\exp(-\Delta E / T)$ (which simulates quantum fluctuation and prevents to fall into local minima).
-The system is local and takes only next neighbor interactions into account,  therefore $\Delta E = 4 s_i \sum_{s_j \in NN(s_i)} s_j$ for a candiate configuration where the spin $s_i$ is flipped and only only next neighbors of $s_j$ are taken into account.
-
-Other stufft: Periodic boundary conditions, thermalization of lattice. One MC step: give each spin possibility to flip to decrease autocorrelation.
+TODO
 
 * Usage
 Build
@@ -38,3 +23,21 @@ Run tests
 #+begin_src shell
   cargo test
 #+end_src
+
+* Milestones
+
+** Can compute magnetization
+- [X] Can do a Metropolis step on one spin
+- [ ] Can do Metropolis steps on each spin on a lattice to generate a configuration
+- [ ] Can compute magnetization on one configuration
+- [ ] Can compute magnetization on full set of configurations
+
+** Can read and write configuration files and use them for computation of magnetization
+- [ ] Can write one lattice configuration to a file
+- [ ] Can read configuration from file
+- [ ] Can compute magnetization from a set of configuration files
+
+** Uses actor model for computation of magnetization from configuration files
+- [ ] Include proper actor library
+- [ ] Worker actor can read one configuration and compute magnetization on it
+- [ ] Manger actor can distributes work onto workers and computes resulting magnetization
