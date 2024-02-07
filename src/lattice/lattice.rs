@@ -19,14 +19,13 @@ impl<Type, const SIZE: usize> Lattice<Type, SIZE> {
     }
 }
 impl<Type: Clone, const SIZE: usize> Lattice<Type, SIZE> {
-    pub fn site(&self, x: isize, y: isize) -> Type {
+    pub fn site(&self, x: isize, y: isize) -> &Type {
         let length = self.sites.len() as isize;
-        self.sites[((x % length + length) % length) as usize]
+        &self.sites[((x % length + length) % length) as usize]
             [((y % length + length) % length) as usize]
-            .clone()
     }
 
-    pub fn neighborhood(&self, x: isize, y: isize) -> Vec<Type> {
+    pub fn neighborhood(&self, x: isize, y: isize) -> Vec<&Type> {
         vec![
             self.site(x + 1, y),
             self.site(x - 1, y),
@@ -36,9 +35,6 @@ impl<Type: Clone, const SIZE: usize> Lattice<Type, SIZE> {
     }
     pub fn iter(&self) -> impl Iterator<Item = &Type> {
         self.sites.iter().flat_map(|x| x.iter())
-    }
-    pub fn into_iter(self) -> impl Iterator<Item = Type> {
-        self.sites.into_iter().flat_map(|x| x.into_iter())
     }
 }
 impl<Type: fmt::Display + fmt::Debug, const SIZE: usize> fmt::Display for Lattice<Type, SIZE> {
@@ -59,31 +55,31 @@ mod tests {
     fn has_periodic_boundary_conditions() {
         let lattice = Lattice::from([['A', 'B'], ['C', 'D']]);
 
-        assert_eq!(lattice.site(-3, 0), 'C');
-        assert_eq!(lattice.site(-2, 0), 'A');
-        assert_eq!(lattice.site(-1, 0), 'C');
-        assert_eq!(lattice.site(1, 0), 'C');
-        assert_eq!(lattice.site(2, 0), 'A');
-        assert_eq!(lattice.site(3, 0), 'C');
-        assert_eq!(lattice.site(4, 0), 'A');
+        assert_eq!(lattice.site(-3, 0), &'C');
+        assert_eq!(lattice.site(-2, 0), &'A');
+        assert_eq!(lattice.site(-1, 0), &'C');
+        assert_eq!(lattice.site(1, 0), &'C');
+        assert_eq!(lattice.site(2, 0), &'A');
+        assert_eq!(lattice.site(3, 0), &'C');
+        assert_eq!(lattice.site(4, 0), &'A');
 
-        assert_eq!(lattice.site(0, -3), 'B');
-        assert_eq!(lattice.site(0, -2), 'A');
-        assert_eq!(lattice.site(0, -1), 'B');
-        assert_eq!(lattice.site(0, 0), 'A');
-        assert_eq!(lattice.site(0, 1), 'B');
-        assert_eq!(lattice.site(0, 2), 'A');
-        assert_eq!(lattice.site(0, 3), 'B');
-        assert_eq!(lattice.site(0, 4), 'A');
+        assert_eq!(lattice.site(0, -3), &'B');
+        assert_eq!(lattice.site(0, -2), &'A');
+        assert_eq!(lattice.site(0, -1), &'B');
+        assert_eq!(lattice.site(0, 0), &'A');
+        assert_eq!(lattice.site(0, 1), &'B');
+        assert_eq!(lattice.site(0, 2), &'A');
+        assert_eq!(lattice.site(0, 3), &'B');
+        assert_eq!(lattice.site(0, 4), &'A');
 
-        assert_eq!(lattice.site(1, 1), 'D');
+        assert_eq!(lattice.site(1, 1), &'D');
     }
 
     #[test]
     fn gives_neighborhood() {
         assert_eq!(
             Lattice::from([['A', 'B'], ['C', 'D']]).neighborhood(0, 0),
-            vec!['C', 'C', 'B', 'B']
+            vec![&'C', &'C', &'B', &'B']
         );
     }
 
@@ -94,12 +90,6 @@ mod tests {
                 .iter()
                 .collect::<Vec<&char>>(),
             vec![&'A', &'B', &'C', &'D']
-        );
-        assert_eq!(
-            Lattice::from([['A', 'B'], ['C', 'D']])
-                .into_iter()
-                .collect::<Vec<_>>(),
-            vec!['A', 'B', 'C', 'D']
         );
     }
 

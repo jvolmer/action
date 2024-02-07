@@ -38,6 +38,11 @@ impl fmt::Display for Spin {
         }
     }
 }
+impl Default for Spin {
+    fn default() -> Self {
+        Self::Up
+    }
+}
 
 #[derive(PartialEq, Debug)]
 pub struct SpinSum {
