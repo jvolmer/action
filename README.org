@@ -1,4 +1,5 @@
 #+TITLE: Action
+[[https://codecov.io/gh/jvolmer/action][https://codecov.io/gh/jvolmer/action/branch/main/graph/badge.svg]] [[https://github.com/jvolmer/action/actions][https://github.com/jvolmer/action/actions/workflows/push.yml/badge.svg]]
 
 > Simulation of the ising model implemented using the actor model
 
@@ -28,7 +29,7 @@ Run tests
 
 ** Can compute magnetization
 - [X] Can do a Metropolis step on one spin
-- [ ] Can do Metropolis steps on each spin on a lattice to generate a configuration
+- [X] Can do Metropolis steps on each spin on a lattice to generate a configuration
 - [ ] Can compute magnetization on one configuration
 - [ ] Can compute magnetization on full set of configurations
 
