@@ -1,5 +1,7 @@
 use std::{fmt, iter::Sum, ops::Add};
 
+use super::observables::Correlation;
+
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Spin {
     Up,
@@ -43,6 +45,9 @@ impl SpinValue {
     pub fn correlate_with(&self, value: SpinValue) -> Correlation {
         Correlation::new(self.0 * value.0)
     }
+    pub fn get(&self) -> i64 {
+        self.0
+    }
 }
 impl Add<SpinValue> for SpinValue {
     type Output = SpinValue;
@@ -56,17 +61,6 @@ impl Sum<SpinValue> for SpinValue {
         I: Iterator<Item = SpinValue>,
     {
         iter.fold(SpinValue(0), |acc, x| acc + x)
-    }
-}
-
-#[derive(Debug, PartialEq)]
-pub struct Correlation(i64);
-impl Correlation {
-    pub fn new(value: i64) -> Self {
-        Self(value)
-    }
-    pub fn get(&self) -> i64 {
-        self.0
     }
 }
 
@@ -102,11 +96,11 @@ mod tests {
     fn spin_values_correlate_with_each_other() {
         assert_eq!(
             Spin::Up.value().correlate_with(Spin::Up.value()),
-            Correlation(1)
+            Correlation::new(1)
         );
         assert_eq!(
             SpinValue::new(4).correlate_with(SpinValue::new(2)),
-            Correlation(8)
+            Correlation::new(8)
         );
     }
 
