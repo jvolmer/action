@@ -1,23 +1,18 @@
-use crate::correlation::Correlation;
-use crate::model::spin::{Spin, SpinSum};
+use crate::model::spin::{Spin, SpinValue};
 
 #[derive(PartialEq, Debug, Clone)]
-pub struct Action {
-    value: i64,
-}
+pub struct Action(i64);
 
 impl Action {
     pub fn new(value: i64) -> Self {
-        Action { value }
+        Action(value)
     }
     pub fn local(spin: &Spin, neighborhood: Vec<&Spin>) -> Self {
-        let spin_sum: SpinSum = neighborhood.into_iter().sum();
-        Action {
-            value: 4 * Correlation::of(spin, &spin_sum).value(),
-        }
+        let spin_sum: SpinValue = neighborhood.into_iter().map(|s| s.value()).sum();
+        Action(4 * spin_sum.correlate_with(spin.value()).get())
     }
     pub fn boltzmann_weight(self) -> f64 {
-        (-self.value as f64).exp()
+        (-self.0 as f64).exp()
     }
 }
 
@@ -27,21 +22,15 @@ mod tests {
 
     #[test]
     fn computes_local_action_from_spin_and_neighborhood() {
-        assert_eq!(
-            Action::local(&Spin::Up, vec![&Spin::Up]),
-            Action { value: 4 }
-        );
-        assert_eq!(
-            Action::local(&Spin::Down, vec![&Spin::Up]),
-            Action { value: -4 }
-        );
+        assert_eq!(Action::local(&Spin::Up, vec![&Spin::Up]), Action(4));
+        assert_eq!(Action::local(&Spin::Down, vec![&Spin::Up]), Action(-4));
         assert_eq!(
             Action::local(&Spin::Up, vec![&Spin::Up, &Spin::Up]),
-            Action { value: 8 }
+            Action(8)
         );
         assert_eq!(
             Action::local(&Spin::Down, vec![&Spin::Up, &Spin::Up]),
-            Action { value: -8 }
+            Action(-8)
         );
     }
 }

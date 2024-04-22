@@ -1,4 +1,3 @@
-use crate::correlation::Observable;
 use std::{fmt, iter::Sum, ops::Add};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -13,20 +12,11 @@ impl Spin {
             Self::Down => Self::Up,
         }
     }
-}
-impl Add for Spin {
-    type Output = SpinSum;
-    fn add(self, other: Self) -> SpinSum {
-        SpinSum {
-            value: self.value() + other.value(),
-        }
-    }
-}
-impl Observable for Spin {
-    fn value(&self) -> i64 {
+
+    pub fn value(&self) -> SpinValue {
         match self {
-            Self::Up => 1,
-            Self::Down => -1,
+            Self::Up => SpinValue(1),
+            Self::Down => SpinValue(-1),
         }
     }
 }
@@ -44,34 +34,39 @@ impl Default for Spin {
     }
 }
 
-#[derive(PartialEq, Debug)]
-pub struct SpinSum {
-    value: i64,
-}
-impl SpinSum {
+#[derive(Debug, PartialEq)]
+pub struct SpinValue(i64);
+impl SpinValue {
     pub fn new(value: i64) -> Self {
-        SpinSum { value }
+        Self(value)
+    }
+    pub fn correlate_with(&self, value: SpinValue) -> Correlation {
+        Correlation::new(self.0 * value.0)
     }
 }
-impl Add<Spin> for SpinSum {
-    type Output = SpinSum;
-    fn add(self, other: Spin) -> SpinSum {
-        SpinSum {
-            value: self.value() + other.value(),
-        }
+impl Add<SpinValue> for SpinValue {
+    type Output = SpinValue;
+    fn add(self, other: SpinValue) -> SpinValue {
+        SpinValue(self.0 + other.0)
     }
 }
-impl<'a> Sum<&'a Spin> for SpinSum {
+impl Sum<SpinValue> for SpinValue {
     fn sum<I>(iter: I) -> Self
     where
-        I: Iterator<Item = &'a Spin>,
+        I: Iterator<Item = SpinValue>,
     {
-        iter.fold(SpinSum { value: 0 }, |acc, &x| acc + x)
+        iter.fold(SpinValue(0), |acc, x| acc + x)
     }
 }
-impl Observable for SpinSum {
-    fn value(&self) -> i64 {
-        self.value
+
+#[derive(Debug, PartialEq)]
+pub struct Correlation(i64);
+impl Correlation {
+    pub fn new(value: i64) -> Self {
+        Self(value)
+    }
+    pub fn get(&self) -> i64 {
+        self.0
     }
 }
 
@@ -81,10 +76,10 @@ mod tests {
 
     #[test]
     fn adds_spins() {
-        assert_eq!(Spin::Up + Spin::Down, SpinSum { value: 0 });
-        assert_eq!(Spin::Down + Spin::Up, SpinSum { value: 0 });
-        assert_eq!(Spin::Up + Spin::Up, SpinSum { value: 2 });
-        assert_eq!(Spin::Down + Spin::Down, SpinSum { value: -2 });
+        assert_eq!(Spin::Up.value() + Spin::Down.value(), SpinValue(0));
+        assert_eq!(Spin::Down.value() + Spin::Up.value(), SpinValue(0));
+        assert_eq!(Spin::Up.value() + Spin::Up.value(), SpinValue(2));
+        assert_eq!(Spin::Down.value() + Spin::Down.value(), SpinValue(-2));
     }
 
     #[test]
@@ -95,11 +90,33 @@ mod tests {
 
     #[test]
     fn up_has_value_one() {
-        assert_eq!(Spin::Up.value(), 1);
+        assert_eq!(Spin::Up.value(), SpinValue(1));
     }
 
     #[test]
     fn down_has_value_minus_one() {
-        assert_eq!(Spin::Down.value(), -1);
+        assert_eq!(Spin::Down.value(), SpinValue(-1));
+    }
+
+    #[test]
+    fn spin_values_correlate_with_each_other() {
+        assert_eq!(
+            Spin::Up.value().correlate_with(Spin::Up.value()),
+            Correlation(1)
+        );
+        assert_eq!(
+            SpinValue::new(4).correlate_with(SpinValue::new(2)),
+            Correlation(8)
+        );
+    }
+
+    #[test]
+    fn spin_values_can_be_summed() {
+        assert_eq!(
+            [Spin::Up.value(), Spin::Up.value(), Spin::Up.value()]
+                .into_iter()
+                .sum::<SpinValue>(),
+            SpinValue(3)
+        );
     }
 }
