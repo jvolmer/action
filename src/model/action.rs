@@ -9,7 +9,7 @@ impl Action {
     }
     pub fn local(spin: &Spin, neighborhood: Vec<&Spin>) -> Self {
         let spin_sum: SpinValue = neighborhood.into_iter().map(|s| s.value()).sum();
-        Action(4 * spin_sum.correlate_with(spin.value()).get())
+        Action(4 * spin_sum.correlate_with(spin.value()).0)
     }
     pub fn boltzmann_weight(self) -> f64 {
         (-self.0 as f64).exp()

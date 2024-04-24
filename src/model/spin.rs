@@ -37,16 +37,10 @@ impl Default for Spin {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct SpinValue(i64);
+pub struct SpinValue(pub i64);
 impl SpinValue {
-    pub fn new(value: i64) -> Self {
-        Self(value)
-    }
     pub fn correlate_with(&self, value: SpinValue) -> Correlation {
-        Correlation::new(self.0 * value.0)
-    }
-    pub fn get(&self) -> i64 {
-        self.0
+        Correlation(self.0 * value.0)
     }
 }
 impl Add<SpinValue> for SpinValue {
@@ -96,12 +90,9 @@ mod tests {
     fn spin_values_correlate_with_each_other() {
         assert_eq!(
             Spin::Up.value().correlate_with(Spin::Up.value()),
-            Correlation::new(1)
+            Correlation(1)
         );
-        assert_eq!(
-            SpinValue::new(4).correlate_with(SpinValue::new(2)),
-            Correlation::new(8)
-        );
+        assert_eq!(SpinValue(2).correlate_with(SpinValue(4)), Correlation(8));
     }
 
     #[test]
