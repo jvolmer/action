@@ -1,2 +1,9 @@
 /target
 *~
+
+# Latex stuff
+*.aux
+*.log
+*.out
+*.el
+*.pdf
