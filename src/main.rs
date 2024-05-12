@@ -1,11 +1,7 @@
-pub mod lattice;
-pub mod model;
-pub mod monte_carlo;
-
-use crate::model::action::Action;
-use crate::model::observables::SpinLattice;
-use crate::model::spin::Spin;
-use crate::monte_carlo::metropolis_step::MonteCarloSimulation;
+use action::model::action::Action;
+use action::model::observables::SpinLattice;
+use action::model::spin::Spin;
+use action::monte_carlo::metropolis_step::MonteCarloSimulation;
 
 fn main() {
     let mut simulation = MonteCarloSimulation::new(569);
