@@ -31,7 +31,7 @@ Run tests
 - [X] Can do a Metropolis step on one spin
 - [X] Can do Metropolis steps on each spin on a lattice to generate a configuration
 - [X] Can compute magnetization on one configuration
-- [ ] Can compute magnetization on full set of configurations (including uncertainty)
+- [X] Can compute magnetization on full set of configurations (including uncertainty)
 
 ** Can read and write configuration files and use them for computation of magnetization
 - [ ] Can write one lattice configuration to a file

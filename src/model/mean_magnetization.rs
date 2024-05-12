@@ -1,11 +1,11 @@
 use crate::model::observables::Magnetization;
 
 #[derive(Debug, PartialEq)]
-struct MeanMagnetization {
+pub struct MeanMagnetization {
     value: f64,
     uncertainty: f64,
 }
-fn sample_mean_magnetization<'a>(
+pub fn sample_mean_magnetization<'a>(
     samples: impl Iterator<Item = &'a Magnetization>,
 ) -> Option<MeanMagnetization> {
     let (count, sum, sum_squared) = samples.fold((0, 0, 0), |(count, sum, sum_squared), m| {
