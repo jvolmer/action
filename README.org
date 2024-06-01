@@ -44,6 +44,4 @@ Run tests
 - [ ] Manger actor can distributes work onto workers and computes resulting magnetization
 
 * Todos
-** Rename lattice to configuration
-** Move simulation of one spin from main to integration test
-** give Generator to MetropolisStep to make it testable (then improve simulation_test.rs)
+** TODO Rename lattice to configuration

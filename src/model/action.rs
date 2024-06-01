@@ -1,4 +1,7 @@
-use crate::model::spin::{Spin, SpinValue};
+use crate::{
+    model::spin::{Spin, SpinValue},
+    monte_carlo::boltzmann_weight::BoltzmannWeight,
+};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Action(i64);
@@ -11,8 +14,8 @@ impl Action {
         let spin_sum: SpinValue = neighborhood.into_iter().map(|s| s.value()).sum();
         Action(4 * spin_sum.correlate_with(spin.value()).0)
     }
-    pub fn boltzmann_weight(self) -> f64 {
-        (-self.0 as f64).exp()
+    pub fn boltzmann_weight(self) -> BoltzmannWeight {
+        BoltzmannWeight::new((-self.0 as f64).exp())
     }
 }
 

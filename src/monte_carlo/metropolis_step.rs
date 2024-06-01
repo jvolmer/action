@@ -13,9 +13,8 @@ impl MonteCarloSimulation {
             rng: rand_pcg::Pcg64Mcg::seed_from_u64(seed),
         }
     }
-    // TODO this should return different types of MonteCarloSteps
     pub fn step(&mut self, action: Action) -> MetropolisStep {
-        MetropolisStep::from(action, self.rng.gen())
+        action.boltzmann_weight().step(self.rng.gen())
     }
 }
 
@@ -24,14 +23,14 @@ pub struct MetropolisStep {
     is_accepted: bool,
 }
 impl MetropolisStep {
+    pub fn new(is_accepted: bool) -> Self {
+        Self { is_accepted }
+    }
     pub fn accept() -> Self {
         Self { is_accepted: true }
     }
-    pub fn from(action: Action, rand: f64) -> Self {
-        // TODO add temperature
-        MetropolisStep {
-            is_accepted: action.boltzmann_weight() >= rand,
-        }
+    pub fn reject() -> Self {
+        Self { is_accepted: false }
     }
     pub fn update(self, spin: Spin) -> Spin {
         if self.is_accepted {
@@ -49,48 +48,42 @@ mod tests {
     #[test]
     fn negative_action_is_always_accepted() {
         assert_eq!(
-            MetropolisStep::from(Action::new(-8), 1.),
-            MetropolisStep { is_accepted: true }
+            Action::new(-8).boltzmann_weight().step(1.),
+            MetropolisStep::accept()
         );
         assert_eq!(
-            MetropolisStep::from(Action::new(-8), 0.),
-            MetropolisStep { is_accepted: true }
+            Action::new(-8).boltzmann_weight().step(0.),
+            MetropolisStep::accept()
         );
         assert_eq!(
-            MetropolisStep::from(Action::new(-8), 0.5),
-            MetropolisStep { is_accepted: true }
+            Action::new(-8).boltzmann_weight().step(0.5),
+            MetropolisStep::accept()
         );
     }
 
     #[test]
     fn positive_action_is_accepted_for_small_random_numbers() {
         assert_eq!(
-            MetropolisStep::from(Action::new(2), 1.0),
-            MetropolisStep { is_accepted: false }
+            Action::new(2).boltzmann_weight().step(1.),
+            MetropolisStep::reject()
         );
         assert_eq!(
-            MetropolisStep::from(Action::new(2), 0.5),
-            MetropolisStep { is_accepted: false }
+            Action::new(2).boltzmann_weight().step(0.5),
+            MetropolisStep::reject()
         );
         assert_eq!(
-            MetropolisStep::from(Action::new(2), 0.0),
-            MetropolisStep { is_accepted: true }
+            Action::new(2).boltzmann_weight().step(0.),
+            MetropolisStep::accept()
         );
     }
 
     #[test]
     fn flips_spin_in_accepted_step() {
-        assert_eq!(
-            MetropolisStep { is_accepted: true }.update(Spin::Up),
-            Spin::Down
-        );
+        assert_eq!(MetropolisStep::accept().update(Spin::Up), Spin::Down);
     }
 
     #[test]
     fn leaves_spin_unchanged_in_rejected_step() {
-        assert_eq!(
-            MetropolisStep { is_accepted: false }.update(Spin::Up),
-            Spin::Up
-        );
+        assert_eq!(MetropolisStep::reject().update(Spin::Up), Spin::Up);
     }
 }
