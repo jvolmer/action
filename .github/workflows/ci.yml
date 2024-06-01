@@ -30,8 +30,8 @@ jobs:
       - name: Create coverate report
         run: |
           cargo install grcov
-          grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existing -o target/coverage/
-          grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o target/coverage/
+          grcov . -s . --binary-path ./target/debug/ -t html --branch --keep-only 'src/*' -o target/coverage/
+          grcov . -s . --binary-path ./target/debug/ -t lcov --branch --keep-only 'src/*' -o target/coverage/
       - name: Upload report to codecov
         uses: codecov/codecov-action@v4
         with:

@@ -5,7 +5,7 @@ use super::spin::{Spin, SpinValue};
 #[derive(Debug, PartialEq)]
 pub struct Correlation(pub i64);
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Magnetization(pub i64);
 
 pub type SpinLattice<const SIZE: usize> = Lattice<Spin, SIZE>;

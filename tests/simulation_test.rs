@@ -1,36 +1,22 @@
 use action::model::action::Action;
-use action::model::observables::SpinLattice;
+use action::model::observables::{Magnetization, SpinLattice};
 use action::model::spin::Spin;
-use action::monte_carlo::metropolis_step::MonteCarloSimulation;
+use action::monte_carlo::metropolis_step::{MetropolisStep, MonteCarloSimulation};
 
 #[test]
-fn update_lattice_once() {
-    let mut simulation = MonteCarloSimulation::new(569);
-
+fn flip_all_spins_in_lattice_once() {
     const SIZE: usize = 5;
-    let mut lattice = SpinLattice::<SIZE>::new();
+    let mut lattice = SpinLattice::<SIZE>::new_with(Spin::Up);
+    assert_eq!(lattice.magnetization(), Magnetization(25));
 
-    println!(
-        "Old lattice:\n{}, m = {:?}",
-        lattice,
-        lattice.magnetization()
-    );
-
-    for i in 1..SIZE {
-        for j in 1..SIZE {
-            let action = Action::local(
-                lattice.site(i as isize, j as isize),
-                lattice.neighborhood(i as isize, j as isize),
-            );
-            lattice.sites[i][j] = simulation.step(action).update(lattice.sites[i][j]);
+    for i in 0..SIZE {
+        for j in 0..SIZE {
+            lattice.sites[i][j] = MetropolisStep::accept().update(lattice.sites[i][j]);
         }
     }
 
-    println!(
-        "New lattice:\n{}, m = {:?}",
-        lattice,
-        lattice.magnetization()
-    );
+    assert_eq!(lattice.magnetization(), Magnetization(-25));
+    assert_eq!(lattice, SpinLattice::<SIZE>::new_with(Spin::Down));
 }
 
 #[test]

@@ -12,6 +12,11 @@ impl<Type: Copy + Default, const SIZE: usize> Lattice<Type, SIZE> {
             sites: [[Type::default(); SIZE]; SIZE],
         }
     }
+    pub fn new_with(site: Type) -> Lattice<Type, SIZE> {
+        Lattice {
+            sites: [[site; SIZE]; SIZE],
+        }
+    }
 }
 impl<Type, const SIZE: usize> Lattice<Type, SIZE> {
     pub fn from(sites: [[Type; SIZE]; SIZE]) -> Lattice<Type, SIZE> {
@@ -44,6 +49,23 @@ impl<Type: fmt::Display + fmt::Debug, const SIZE: usize> fmt::Display for Lattic
             "{}",
             self.sites.iter().map(|row| row.iter().join(" ")).join("\n")
         )
+    }
+}
+impl<Type: fmt::Display + fmt::Debug, const SIZE: usize> fmt::Debug for Lattice<Type, SIZE> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            self.sites.iter().map(|row| row.iter().join(" ")).join("\n")
+        )
+    }
+}
+impl<Type: PartialEq + Clone, const SIZE: usize> PartialEq for Lattice<Type, SIZE> {
+    fn eq(&self, other: &Self) -> bool {
+        std::iter::zip(self.iter(), other.iter())
+            .filter(|(s, o)| s != o)
+            .count()
+            == 0
     }
 }
 

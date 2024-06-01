@@ -24,6 +24,9 @@ pub struct MetropolisStep {
     is_accepted: bool,
 }
 impl MetropolisStep {
+    pub fn accept() -> Self {
+        Self { is_accepted: true }
+    }
     pub fn from(action: Action, rand: f64) -> Self {
         // TODO add temperature
         MetropolisStep {
