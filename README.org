@@ -1,13 +1,7 @@
 #+TITLE: Action
 [[https://codecov.io/gh/jvolmer/action][https://codecov.io/gh/jvolmer/action/branch/main/graph/badge.svg]] [[https://github.com/jvolmer/action/actions/workflows/ci.yml][https://github.com/jvolmer/action/actions/workflows/ci.yml/badge.svg]]
 
-> Simulation of the ising model implemented using the actor model
-
-* Background
-TODO
-
-* Theory
-TODO
+> Simulation of the Ising model implemented using the actor model
 
 * Usage
 Build
@@ -43,5 +37,8 @@ Run tests
 - [ ] Worker actor can read one configuration and compute magnetization on it
 - [ ] Manger actor can distributes work onto workers and computes resulting magnetization
 
-* Todos
-** TODO Rename lattice to configuration
+* Background
+TODO
+
+* Theory
+TODO

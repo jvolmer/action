@@ -12,6 +12,8 @@ fn main() {
     let mut magnetizations = Vec::<Magnetization>::default();
 
     for _sweep in 1..10 {
+        // Tried to do this with lattice.iter_mut(), but does not work:
+        // at each step I need immutable ref neighborhood and mutable ref site
         for i in 1..SIZE {
             for j in 1..SIZE {
                 let action = Action::local(

@@ -6,7 +6,15 @@ pub struct Lattice<Type, const SIZE: usize> {
     pub sites: [[Type; SIZE]; SIZE],
 }
 
-impl<Type: Copy + Default, const SIZE: usize> Lattice<Type, SIZE> {
+impl<Type, const SIZE: usize> Lattice<Type, SIZE> {
+    pub fn from(sites: [[Type; SIZE]; SIZE]) -> Lattice<Type, SIZE> {
+        Lattice { sites }
+    }
+}
+impl<Type, const SIZE: usize> Lattice<Type, SIZE>
+where
+    Type: Copy + Default,
+{
     pub fn new() -> Lattice<Type, SIZE> {
         Lattice {
             sites: [[Type::default(); SIZE]; SIZE],
@@ -18,12 +26,10 @@ impl<Type: Copy + Default, const SIZE: usize> Lattice<Type, SIZE> {
         }
     }
 }
-impl<Type, const SIZE: usize> Lattice<Type, SIZE> {
-    pub fn from(sites: [[Type; SIZE]; SIZE]) -> Lattice<Type, SIZE> {
-        Lattice { sites }
-    }
-}
-impl<Type: Clone, const SIZE: usize> Lattice<Type, SIZE> {
+impl<Type, const SIZE: usize> Lattice<Type, SIZE>
+where
+    Type: Clone,
+{
     pub fn site(&self, x: isize, y: isize) -> &Type {
         let length = self.sites.len() as isize;
         &self.sites[((x % length + length) % length) as usize]
@@ -42,7 +48,10 @@ impl<Type: Clone, const SIZE: usize> Lattice<Type, SIZE> {
         self.sites.iter().flat_map(|x| x.iter())
     }
 }
-impl<Type: fmt::Display + fmt::Debug, const SIZE: usize> fmt::Display for Lattice<Type, SIZE> {
+impl<Type, const SIZE: usize> fmt::Display for Lattice<Type, SIZE>
+where
+    Type: fmt::Display,
+{
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
@@ -51,16 +60,18 @@ impl<Type: fmt::Display + fmt::Debug, const SIZE: usize> fmt::Display for Lattic
         )
     }
 }
-impl<Type: fmt::Display + fmt::Debug, const SIZE: usize> fmt::Debug for Lattice<Type, SIZE> {
+impl<Type, const SIZE: usize> fmt::Debug for Lattice<Type, SIZE>
+where
+    Type: fmt::Display,
+{
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            self.sites.iter().map(|row| row.iter().join(" ")).join("\n")
-        )
+        fmt::Display::fmt(&self, f)
     }
 }
-impl<Type: PartialEq + Clone, const SIZE: usize> PartialEq for Lattice<Type, SIZE> {
+impl<Type, const SIZE: usize> PartialEq for Lattice<Type, SIZE>
+where
+    Type: PartialEq + Clone,
+{
     fn eq(&self, other: &Self) -> bool {
         std::iter::zip(self.iter(), other.iter())
             .filter(|(s, o)| s != o)
